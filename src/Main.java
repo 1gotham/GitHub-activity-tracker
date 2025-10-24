@@ -1,9 +1,13 @@
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
@@ -27,8 +31,16 @@ public class Main {
                 .send(request, HttpResponse.BodyHandlers.ofString());
 
         String jsonString = response.body();
+        Gson gson = new Gson();
 
-//        JsonReader
+        List<GitHubEvent> events = gson.fromJson(jsonString, new TypeToken<List<GitHubEvent>>(){}.getType());
+        for (GitHubEvent e : events) {
+            System.out.println("Repo: " + e.repo.name);
+            System.out.println("Typ: " + e.type);
+            System.out.println("Data: " + e.created_at);
+            System.out.println("---");
+        }
+
 
 
     }
